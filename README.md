@@ -1,2 +1,5 @@
-# reactjs-redux-todo-app
-use redux, hook
+
+## Running the finished code
+
+- npm install
+- npm start
