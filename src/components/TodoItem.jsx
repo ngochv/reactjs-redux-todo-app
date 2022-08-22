@@ -1,16 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import { checkedTodo, deletedTodo, updateTodo } from "../redux/actions";
+import { useSelector } from "react-redux";
+
+import {
+  checkedTodo,
+  addUpdateEdit,
+  deletedTodo,
+  removeEdit,
+  updateTodo,
+} from "../redux/actions";
 
 function TodoItem({ todo }) {
   let dispatch = useDispatch();
-  const [isEditTodo, setIsEditTodo] = useState();
-  const [name, setName] = useState();
+  const editTodo = useSelector((state) => state.edit);
+
+  const isEditTodo = (todo) => {
+    if (Object.keys(editTodo).length !== 0 && editTodo?.id === todo.id) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <li
-      className={`list-group-item ${todo.completed && "list-group-item-success"
-        }`}
+      className={`list-group-item ${todo.completed && "list-group-item-success"}`}
     >
       <div className="d-flex justify-content-between">
         <span className="d-flex align-items-center">
@@ -20,29 +33,33 @@ function TodoItem({ todo }) {
             defaultChecked={todo.completed}
             onClick={() => dispatch(checkedTodo({ id: todo.id }))}
           />
-          {isEditTodo && (
+          {isEditTodo(todo) && (
             <input
               type="text"
               className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={editTodo.name}
+              onChange={(event) =>
+                dispatch(
+                  addUpdateEdit({ id: todo.id, name: event.target.value })
+                )
+              }
             />
           )}
-          {!isEditTodo && todo.name}
+          {!isEditTodo(todo) && todo.name}
         </span>
         <div>
           <button
             className="btn btn-primary mr-2"
             onClick={() => {
-              if (isEditTodo) {
-                dispatch(updateTodo({ ...todo, name: name }));
+              if (isEditTodo(todo)) {
+                dispatch(updateTodo(editTodo));
+                dispatch(removeEdit());
               } else {
-                setName(todo.name);
+                dispatch(addUpdateEdit(todo));
               }
-              setIsEditTodo(!isEditTodo);
             }}
           >
-            {isEditTodo ? "Update" : "edit"}
+            {isEditTodo(todo) ? "Update" : "edit"}
           </button>
           <button
             className="btn btn-danger"

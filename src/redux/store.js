@@ -1,4 +1,11 @@
 import { createStore } from "redux";
-import { reducer } from "./reducer";
+import { reducer, reducerEdit } from "./reducer";
 
-export const store = createStore(reducer);
+import { combineReducers } from "redux";
+
+const allReducers = combineReducers({
+  todos: reducer,
+  edit: reducerEdit,
+});
+
+export const store = createStore(allReducers);

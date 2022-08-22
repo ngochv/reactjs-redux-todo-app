@@ -1,6 +1,13 @@
 import { v1 as uuid } from "uuid";
 
-import { ADD_TODO, CHECKED_TODO, DELETE_TODO, UPDATE_TODO } from "./actions";
+import {
+  ADD_TODO,
+  CHECKED_TODO,
+  DELETE_TODO,
+  UPDATE_TODO,
+  ADD_UPDATE_EDIT,
+  REMOVE_EDIT,
+} from "./actions";
 import { todos } from "./states";
 
 export const reducer = (state = todos, action) => {
@@ -43,6 +50,17 @@ export const reducer = (state = todos, action) => {
         newTodos[indexChecked].completed = !newTodos[indexChecked].completed;
       }
       return newTodos;
+    default:
+      return state;
+  }
+};
+
+export const reducerEdit = (state = {}, action) => {
+  switch (action.type) {
+    case ADD_UPDATE_EDIT:
+      return { ...action.payload };
+    case REMOVE_EDIT:
+      return {};
     default:
       return state;
   }
